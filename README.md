@@ -6,6 +6,21 @@ This document provides setup and deployment instructions for **Frontend**, **Bac
 
 ## 📌 Frontend
 
+### Installation & Run Commands
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+```
+
+📂 After build, the output folder is `dist/`.
+
 ### Environment Variables
 
 Create a `.env` file in the frontend root directory with the following variables (example):
@@ -27,24 +42,19 @@ export default defineConfig({
 });
 ```
 
+---
+
+## 📌 Backend
+
 ### Installation & Run Commands
 
 ```bash
 # Install dependencies
 npm install
 
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
+# Run backend server
+npm start
 ```
-
-📂 After build, the output folder is `dist/`.
-
----
-
-## 📌 Backend
 
 ### Environment Variables
 
@@ -58,27 +68,35 @@ JWT_SECRET=YourSecretKeyHere
 JWT_EXPIRY=7d
 ```
 
-### Installation & Run Commands
+### ⚙️ CORS Setup (Allowed Origins)
 
-```bash
-# Install dependencies
-npm install
+To enable CORS, add the following setup in your index.js or server.js:
 
-# Run backend server
-npm start
+```js
+// ✅ Allowed origins (local + deployed)
+const allowedOrigins = [
+  "http://localhost:5173", // Vite React local
+  "https://yourfrontend.com", // Deployed React app
+];
+
+// ✅ CORS setup
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("❌ Not allowed by CORS"));
+      }
+    },
+    credentials: true, // if you're using cookies/auth headers
+  })
+);
 ```
 
 ---
 
 ## 📌 Admin Panel
-
-### Environment Variables
-
-Create a `.env` file in the admin root directory with the following variables (example):
-
-```env
-VITE_API_BASE_URL=http://localhost:4000
-```
 
 ### Installation & Run Commands
 
@@ -94,3 +112,13 @@ npm run build
 ```
 
 📂 After build, the output folder is `dist/`.
+
+### Environment Variables
+
+Create a `.env` file in the admin root directory with the following variables (example):
+
+```env
+VITE_API_BASE_URL=http://localhost:4000
+```
+
+---
